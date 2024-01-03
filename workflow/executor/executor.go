@@ -351,6 +351,9 @@ func (we *WorkflowExecutor) saveArtifactFromFile(ctx context.Context, art *wfv1.
 			return err
 		}
 	}
+
+	fmt.Printf("executor Save: %#v", art.S3)
+
 	driverArt, err := we.newDriverArt(art)
 	if err != nil {
 		return err
@@ -636,6 +639,15 @@ func (we *WorkflowExecutor) saveContainerLogs(ctx context.Context, tempLogsDir, 
 
 // GetSecret will retrieve the Secrets from VolumeMount
 func (we *WorkflowExecutor) GetSecret(ctx context.Context, accessKeyName string, accessKey string) (string, error) {
+	fmt.Println("Secret path: " + filepath.Join(common.SecretVolMountPath, accessKeyName, accessKey))
+	entries, err := os.ReadDir(filepath.Clean(filepath.Join(common.SecretVolMountPath, accessKeyName)))
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	for _, e := range entries {
+		fmt.Println(e.Name())
+	}
 	file, err := os.ReadFile(filepath.Clean(filepath.Join(common.SecretVolMountPath, accessKeyName, accessKey)))
 	if err != nil {
 		return "", err

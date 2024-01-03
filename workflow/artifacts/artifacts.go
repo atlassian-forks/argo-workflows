@@ -43,12 +43,15 @@ func newDriver(ctx context.Context, art *wfv1.Artifact, ri resource.Interface) (
 		var enableEncryption bool
 		var caKey string
 
+		fmt.Printf("newDriver: %#v", art.S3)
+
 		if art.S3.AccessKeySecret != nil && art.S3.AccessKeySecret.Name != "" {
 			accessKeyBytes, err := ri.GetSecret(ctx, art.S3.AccessKeySecret.Name, art.S3.AccessKeySecret.Key)
 			if err != nil {
 				return nil, err
 			}
 			accessKey = accessKeyBytes
+			fmt.Println(accessKey)
 			secretKeyBytes, err := ri.GetSecret(ctx, art.S3.SecretKeySecret.Name, art.S3.SecretKeySecret.Key)
 			if err != nil {
 				return nil, err
@@ -61,6 +64,7 @@ func newDriver(ctx context.Context, art *wfv1.Artifact, ri resource.Interface) (
 					return nil, err
 				}
 				sessionToken = sessionTokenBytes
+				fmt.Println(sessionToken)
 			}
 		}
 
